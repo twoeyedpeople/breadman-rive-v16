@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.closeBtn {
+  border-radius: 24px;
+  border: 3px solid #fff;
+  background: linear-gradient(95deg, #ffdb66 41.18%, #fde189 95.73%);
+  box-shadow: -3px 3px 4px 0 rgba(0, 0, 0, 0.2) inset,
+    -4px 4px 2px 0 rgba(0, 0, 0, 0.15);
+
+  color: #9a7a5b;
+  text-transform: uppercase;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 140%; /* 39.2px */
+}
+
+.container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Styles the scrollbar thumb to be visible */
+.container::-webkit-scrollbar-thumb {
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+/* For Firefox */
+.container {
+  scrollbar-color: #fff transparent; /* Sets the thumb color and track color */
+}
+
+.phonenumber {
+  border-radius: 21.302px;
+  background: rgba(157, 111, 69, 0.12);
+  mix-blend-mode: darken;
+  box-shadow: 3px 3px 4px 0 rgba(178, 94, 27, 0.2) inset;
+  filter: blur(0.5px);
+}
