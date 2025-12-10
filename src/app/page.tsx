@@ -318,7 +318,7 @@ function ElevenLabsAvatar({ dynamicVariables }: ElevenLabsAvatarProps) {
 
           {/* Mascot wrapper */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-[calc(9_*_100vh_/16)] h-full scale-77 -translate-y-24">
+            <div className="w-[calc(9_*_100vh_/16)] h-full scale-77 -translate-y-48">
               <MascotRive />
             </div>
           </div>

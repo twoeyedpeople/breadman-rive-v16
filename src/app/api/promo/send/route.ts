@@ -1,7 +1,9 @@
 import { NextRequest } from "next/server";
 
-const VAULT_BASE_URL =
-  "https://vault-esp-staging-au-kvwr4chkta-ts.a.run.app/v1";
+// development link for vault
+//const VAULT_BASE_URL = "https://vault-esp-staging-au-kvwr4chkta-ts.a.run.app/v1";
+
+const VAULT_BASE_URL = "https://api.vault-portal.com/v1";
 
 const CODE_CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -16,7 +18,9 @@ function requireEnv(key: string): string {
 function generateCode(length = 6): string {
   const bytes = new Uint8Array(length);
   crypto.getRandomValues(bytes);
-  return Array.from(bytes, (b) => CODE_CHARSET[b % CODE_CHARSET.length]).join("");
+  return Array.from(bytes, (b) => CODE_CHARSET[b % CODE_CHARSET.length]).join(
+    ""
+  );
 }
 
 async function readBody(res: Response): Promise<unknown> {
@@ -33,7 +37,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null);
     const phoneRaw = (body as { phone?: unknown } | null)?.phone;
-    const phone = typeof phoneRaw === "string" ? phoneRaw.replace(/\D/g, "") : "";
+    const phone =
+      typeof phoneRaw === "string" ? phoneRaw.replace(/\D/g, "") : "";
 
     if (phone.length < 10 || phone.length > 15) {
       return Response.json(
@@ -44,7 +49,7 @@ export async function POST(req: NextRequest) {
 
     const username = requireEnv("VAULT_USERNAME");
     const password = requireEnv("VAULT_PASSWORD");
-    const campaignId = Number(process.env.VAULT_CAMPAIGN_ID ?? "1020");
+    const campaignId = Number(process.env.VAULT_CAMPAIGN_ID ?? "1582");
     const email = process.env.VAULT_EMAIL ?? "travisaweerts@gmail.com";
 
     console.log("LOGIN ", JSON.stringify({ username, password }));
@@ -58,10 +63,15 @@ export async function POST(req: NextRequest) {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({ username: "travisaweerts@gmail.com", password: "8we%J3VU!$QUbE5" }),
+        body: JSON.stringify({
+          username: "travisaweerts@gmail.com",
+          password: `m2ay4Z$GH!4n&aH6`,
+        }),
         cache: "no-store",
       });
-      loginBody = (await readBody(loginRes)) as { access_token?: string } | null;
+      loginBody = (await readBody(loginRes)) as {
+        access_token?: string;
+      } | null;
     } catch (err) {
       console.error("Vault login network error", err);
       return Response.json(
