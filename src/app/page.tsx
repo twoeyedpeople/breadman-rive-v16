@@ -16,6 +16,7 @@ import { CloseBtnX } from "./components/closeBtnX";
 import { RestartBtnIcon } from "./components/restartBtnIcon";
 import { PromoGiftCard } from "./components/PromoGiftCard";
 import QRCode from "./components/QRCode";
+import { cn } from "./util/ui";
 
 interface ElevenLabsAvatarProps {
   dynamicVariables?: Record<string, string | number | boolean>;
@@ -291,6 +292,9 @@ function ElevenLabsAvatar({ dynamicVariables }: ElevenLabsAvatarProps) {
   }, [showQRCode]);
 
   const restartConversation = useCallback(() => {
+    setShowQRCode(false);
+    setIsPrivacyActive(false);
+    setIsKeypadActive(false);
     setIsRestartActive(false);
     stopConversation();
     startConversation();
@@ -414,19 +418,36 @@ function ElevenLabsAvatar({ dynamicVariables }: ElevenLabsAvatarProps) {
           )}
 
           {/* CC */}
-          <div className="absolute bottom-32 left-0 right-0 flex items-center justify-center z-20 px-10">
-            {isCCActive && botMessage.length > 0 ? (
-              <div
-                className="text-white text-lg font-bold rounded-3xl p-3 shadow-2xl text-center"
-                style={{ backgroundColor: "rgba(134, 41, 12, 0.80)" }}
-              >
-                {conversation.isSpeaking ? botMessage : ""}
+          <div
+            className={cn(
+              "absolute bottom-56 left-0 right-0 flex items-center justify-center z-20 px-10 transition-all duration-300",
+              isCCActive && conversation.isSpeaking && botMessage.length > 0
+                ? "opacity-100 bottom-56"
+                : "opacity-0 bottom-60"
+            )}
+          >
+            {isCCActive && conversation.isSpeaking && botMessage.length > 0 ? (
+              <div className="relative">
+                <div
+                  className="absolute -top-[30px] left-1/2 -translate-x-1/2 w-0 h-0"
+                  style={{
+                    borderLeft: "30px solid transparent",
+                    borderRight: "30px solid transparent",
+                    borderBottom: "30px solid rgba(134, 41, 12, 0.80)",
+                  }}
+                />
+                <div
+                  className="text-white text-lg font-bold rounded-3xl p-3 shadow-2xl text-center"
+                  style={{ backgroundColor: "rgba(134, 41, 12, 0.80)" }}
+                >
+                  {conversation.isSpeaking ? botMessage : "..."}
+                </div>
               </div>
             ) : null}
           </div>
 
           {/* Controls */}
-          <div className="absolute bottom-7 left-0 right-0 flex items-center justify-between z-20 px-10">
+          <div className="absolute bottom-20 left-0 right-0 flex items-center justify-between z-20 px-10">
             <div className="flex w-1/4 justify-start">
               <button
                 onClick={toggleCC}
@@ -446,36 +467,24 @@ function ElevenLabsAvatar({ dynamicVariables }: ElevenLabsAvatarProps) {
               {conversation.status === "connected" ? (
                 <div className="flex gap-x-5">
                   <button
-                    className="bg-no-repeat bg-center bg-cover flex items-center justify-center gap-x-2.5 h-24 w-24 text-lg font-mono truncate transition"
+                    className="bg-no-repeat bg-center bg-cover flex items-center justify-center gap-x-2.5 h-24 w-24 text-lg font-mono truncate transition scale-125"
                     style={{
                       backgroundImage: "url(/call-end.png)",
                       color: "#FFFFFF",
                     }}
                     onClick={hangUp}
                   ></button>
-                  {/* 
-                  <button
-                    onClick={toggleMute}
-                    className="inline-flex items-center justify-center gap-x-2.5 h-16 w-fit p-5 text-lg font-mono rounded-[3px] truncate transition hover:opacity-90 border"
-                    style={{
-                      backgroundColor: isMuted
-                        ? "rgba(255, 255, 255, 0.9)"
-                        : "#FFFFFF",
-                      color: "rgba(91, 71, 55, 0.85)",
-                      borderColor: "rgba(139, 108, 80, 0.2)",
-                    }}
-                  >
-                    {isMuted ? "Unmute" : "Mute"}
-                  </button> 
-                  */}
                 </div>
               ) : (
                 <button
                   onClick={startConversation}
                   disabled={isConnecting}
-                  className={`bg-no-repeat bg-center bg-cover flex items-center justify-center gap-x-2.5 h-24 w-24 text-lg font-mono truncate transition ${
-                    isConnecting ? "pointer-events-none" : ""
-                  }`}
+                  className={cn(
+                    `bg-no-repeat bg-center bg-cover flex items-center justify-center gap-x-2.5 h-24 w-24 text-lg font-mono truncate transition scale-125 ${
+                      isConnecting ? "pointer-events-none" : ""
+                    }`,
+                    isConnecting ? "animate-scale-up-down" : ""
+                  )}
                   style={{
                     backgroundImage: isConnecting
                       ? "url(/call-empty.png)"
