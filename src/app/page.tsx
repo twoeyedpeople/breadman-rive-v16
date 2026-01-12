@@ -5,6 +5,7 @@ import { useConversation } from "@elevenlabs/react";
 import {
   Alignment,
   Fit,
+  MascotCall,
   MascotClient,
   MascotProvider,
   MascotRive,
@@ -322,18 +323,29 @@ function ElevenLabsAvatar({ dynamicVariables }: ElevenLabsAvatarProps) {
 
           {/* Mascot wrapper */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-[calc(9_*_100vh_/16)] h-full scale-77 -translate-y-48">
-              <MascotRive />
+            <div
+              className="h-full w-full"
+              data-className="w-[calc(9_*_100vh_/16)] h-full scale-77 -translate-y-48"
+            >
+              <MascotRive
+                onClick={({ inputs }) => {
+                  console.log("clicked inputs", inputs);
+                  if (inputs?.cardWon) {
+                    inputs.cardWon.value = true;
+                    console.log("cardWon", inputs.cardWon.value);
+                  }
+                }}
+              />
             </div>
           </div>
 
-          <div className="absolute inset-0 flex items-center justify-center">
+          {/* <div className="absolute inset-0 flex items-center justify-center">
             <img
               src="/overlay-big.png"
               alt=""
               className="h-screen w-auto max-w-none flex-none object-center"
             />
-          </div>
+          </div> */}
 
           {/* HIDDEN RESTART */}
           <div className="absolute top-0 left-0  flex items-center justify-center z-20">
@@ -447,7 +459,7 @@ function ElevenLabsAvatar({ dynamicVariables }: ElevenLabsAvatarProps) {
           </div>
 
           {/* Controls */}
-          <div className="absolute bottom-20 left-0 right-0 flex items-center justify-between z-20 px-10">
+          <div className="absolute bottom-[5vh] left-0 right-0 flex items-center justify-between z-20 px-10">
             <div className="flex w-1/4 justify-start">
               <button
                 onClick={toggleCC}
@@ -467,7 +479,7 @@ function ElevenLabsAvatar({ dynamicVariables }: ElevenLabsAvatarProps) {
               {conversation.status === "connected" ? (
                 <div className="flex gap-x-5">
                   <button
-                    className="bg-no-repeat bg-center bg-cover flex items-center justify-center gap-x-2.5 h-24 w-24 text-lg font-mono truncate transition scale-125"
+                    className="bg-no-repeat bg-center bg-cover flex items-center justify-center gap-x-2.5 h-[8vh] w-[8vh] text-lg font-mono truncate transition scale-125"
                     style={{
                       backgroundImage: "url(/call-end.png)",
                       color: "#FFFFFF",
@@ -480,7 +492,7 @@ function ElevenLabsAvatar({ dynamicVariables }: ElevenLabsAvatarProps) {
                   onClick={startConversation}
                   disabled={isConnecting}
                   className={cn(
-                    `bg-no-repeat bg-center bg-cover flex items-center justify-center gap-x-2.5 h-24 w-24 text-lg font-mono truncate transition scale-125 ${
+                    `bg-no-repeat bg-center bg-cover flex items-center justify-center gap-x-2.5 h-[8vh] w-[8vh] text-lg font-mono truncate transition scale-125 ${
                       isConnecting ? "pointer-events-none" : ""
                     }`,
                     isConnecting ? "animate-scale-up-down" : ""
@@ -540,7 +552,7 @@ export default function Home() {
   // Available with Mascot Bot SDK subscription
   let mascotUrl = "/mascot/bear.riv";
 
-  // mascotUrl = "/mascot/ginger_koala-test_04.riv";
+  mascotUrl = "/gingerkoala_03-oldSDK.riv";
 
   // Hardcoded dynamic variables for testing
   const dynamicVariables = {
@@ -554,36 +566,52 @@ export default function Home() {
         <MascotClient
           src={mascotUrl}
           artboard="Character"
-          inputs={["is_speaking2", "gesture2"]}
+          inputs={["is_speaking", "cardWon"]}
           layout={{
             fit: Fit.Contain,
             alignment: Alignment.BottomCenter,
           }}
           onRiveLoad={(riveInstance) => {
-            // const r =
-            //   riveInstance && "rive" in riveInstance
-            //     ? (riveInstance as any).rive
-            //     : riveInstance;
-            // const artboardName = "Character";
-            // try {
-            //   const names = r?.stateMachineNames ?? [];
-            //   console.group(`Artboard: ${artboardName}`);
-            //   names.forEach((smName: string) => {
-            //     const inputs = r?.stateMachineInputs?.(smName) ?? [];
-            //     console.group(`State Machine: ${smName}`);
-            //     console.table(
-            //       inputs.map((input: any) => ({
-            //         name: input.name,
-            //         type: input.type,
-            //         value: input.value,
-            //       }))
-            //     );
-            //     console.groupEnd();
-            //   });
-            //   console.groupEnd();
-            // } catch (e) {
-            //   console.warn("Failed to enumerate state machines/inputs", e);
-            // }
+            const r =
+              riveInstance && "rive" in riveInstance
+                ? (riveInstance as any).rive
+                : riveInstance;
+            const artboardName = "Character";
+            try {
+              const names = r?.stateMachineNames ?? [];
+              console.group(`Artboard: ${artboardName}`);
+              names.forEach((smName: string) => {
+                const inputs = r?.stateMachineInputs?.(smName) ?? [];
+                console.group(`State Machine: ${smName}`);
+                console.table(
+                  inputs.map((input: any) => ({
+                    name: input.name,
+                    type: input.type,
+                    value: input.value,
+                  }))
+                );
+
+                inputs.forEach((input: any) => {
+                  console.log("input", input);
+                  if (input.name === "cardWon") {
+                    setTimeout(function () {
+                      // if (typeof (input as any).fire === "function") {
+                      //   console.log("firing cardWon", input);
+                      //   (input as any).fire();
+                      // } else if ("value" in input) {
+                      //   (input as any).value = true;
+                      // }
+                      (input as any).value = true;
+                    }, 5000);
+                  }
+                });
+
+                console.groupEnd();
+              });
+              console.groupEnd();
+            } catch (e) {
+              console.warn("Failed to enumerate state machines/inputs", e);
+            }
           }}
         >
           <ElevenLabsAvatar dynamicVariables={dynamicVariables} />
