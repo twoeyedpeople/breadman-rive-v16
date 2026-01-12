@@ -8,6 +8,7 @@ type PromoGiftCardProps = {
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   onFinish?: () => void;
+  onSubmit?: () => void;
 };
 
 export function PromoGiftCard({
@@ -16,6 +17,7 @@ export function PromoGiftCard({
   isOpen,
   onOpenChange,
   onFinish,
+  onSubmit,
 }: PromoGiftCardProps) {
   const [showPromoInternal, setShowPromoInternal] = useState(false);
 
@@ -46,8 +48,8 @@ export function PromoGiftCard({
   };
 
   const handleClosePromo = () => {
+    onOpenChange?.(false);
     if (typeof isOpen === "boolean") {
-      onOpenChange?.(false);
     } else {
       setShowPromoInternal(false);
     }
@@ -113,6 +115,9 @@ export function PromoGiftCard({
     setIsError(false);
 
     try {
+      if (onSubmit) {
+        onSubmit();
+      }
       const res = await fetch("/api/promo/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -155,58 +160,27 @@ export function PromoGiftCard({
 
   return (
     <>
-      {/* <button
-        onClick={() => {
-          if (typeof isOpen === "boolean") {
-            onOpenChange?.(true);
-          } else {
-            setShowPromoInternal(true);
-          }
-        }}
-        className={`fixed bottom-4 left-4 z-30 rounded-full bg-black/70 text-white px-4 py-2 text-sm shadow hover:bg-black/60 ${triggerClassName}`}
-      >
-        {triggerLabel}
-      </button> */}
-      {showPromo && !showKeypad && (
-        <div className="fixed inset-0 z-20 bg-black/60 backdrop-blur-lg flex items-center justify-center">
-          <button
-            onClick={handleClosePromo}
-            className="absolute top-4 right-4 h-10 w-10 z-30 rounded-full bg-white/80 text-black font-semibold shadow hover:bg-white"
-            aria-label="Close promo"
-          >
-            ×
-          </button>
-          <div className="px-8 py-10 w-[min(420px,90vw)] text-center">
-            <div className="text-4xl font-bold uppercase text-white mb-2">
-              Wow!
-            </div>
-            <div className="text-2xl text-white mb-4">
-              Looks like you&apos;ve impressed Captain Crumble. You&apos;ve
-              scored a $10 Gift Card to enjoy at the airport!
-            </div>
-            <button
-              className="mt-4 inline-flex items-center justify-center rounded-full bg-green-500 px-6 py-3 text-black font-medium shadow-md hover:bg-amber-400 cursor-pointer"
-              onClick={() => setShowKeypad(true)}
-            >
-              Redeem now
-            </button>
-          </div>
-        </div>
-      )}
       {showPromo && showKeypad && (
-        <div className="fixed inset-0 z-30 backdrop-blur flex items-end justify-end p-4 pb-8">
+        <div
+          className="fixed inset-0 z-30 flex items-end justify-end p-4 pb-8"
+          onClick={handleClosePromo}
+        >
           <div
             className="rounded-3xl border-8 shadow-2xl border-white bg-cover"
-            style={{ backgroundImage: "url('/keypad_bg.jpg')" }}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: "#F5D996",
+              backgroundImage: "url('/keypad_bg.jpg')",
+            }}
           >
             <button
               onClick={handleClosePromo}
-              className="absolute top-4 right-4 h-10 w-10 z-40 rounded-full bg-white/80 text-black font-semibold shadow hover:bg-white"
+              className="absolute top-4 right-4 h-16 w-16 z-40 rounded-full bg-white/80 text-black text-3xl font-semibold shadow hover:bg-white"
               aria-label="Close keypad"
             >
               ×
             </button>
-            <div className="w-[350px] max-w-[350px] text-center text-[#6B4827] space-y-6 relative p-5 pb-12">
+            <div className="w-[60vw] max-w-[60vw] text-center text-[#6B4827] space-y-6 relative p-5 pb-12">
               <div
                 className={`text-lg font-bold ${
                   isError ? "text-red-500" : "text-[#6B4827]"
@@ -224,7 +198,7 @@ export function PromoGiftCard({
                       Gift Card
                     </span>
                     <span className="leading-[10px]">
-                      to enjoy at the airport!
+                      enter your phone number!
                     </span>
                   </div>
                 )}
@@ -253,7 +227,7 @@ export function PromoGiftCard({
                         return (
                           <div
                             key={`empty-${idx}`}
-                            className="h-20 w-20 bg-no-repeat bg-center bg-contain"
+                            className="h-[10vw] w-[10vw] bg-no-repeat bg-center bg-cover"
                             style={{
                               backgroundImage: "url('keypad_" + n + ".png')",
                             }}
@@ -265,7 +239,7 @@ export function PromoGiftCard({
                             key="backspace"
                             onClick={handleBackspace}
                             disabled={isSubmitting}
-                            className="h-20 w-20 rounded-full bg-no-repeat bg-center bg-contain  hover:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="h-[10vw] w-[10vw] rounded-full bg-no-repeat bg-center bg-contain  hover:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
                             style={{
                               backgroundImage: "url('keypad_x.png')",
                             }}
@@ -277,7 +251,7 @@ export function PromoGiftCard({
                           key={n}
                           onClick={() => handleDigit(n)}
                           disabled={isSubmitting}
-                          className="h-20 w-20 rounded-full bg-no-repeat bg-center bg-contain  hover:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
+                          className="h-[10vw] w-[10vw] rounded-full bg-no-repeat bg-center bg-contain  hover:bg-gray-100 disabled:opacity-70 disabled:cursor-not-allowed"
                           style={{
                             backgroundImage: "url('keypad_" + n + ".png')",
                           }}

@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
         code,
         first_name: "Traveller",
         last_name: "Merry",
-        value: 0.01,
+        value: 10.0,
         phone,
         email,
         send_sms: true,

@@ -1,7 +1,7 @@
 export const Privacy = ({ className = "" }) => {
   return (
     <div
-      className={`container max-h-[70vh] ${className} overflow-scroll overflow-x-hidden text-sm pr-8 scrollbar-thumb-rounded-full scrollbar-track-black`}
+      className={`container max-h-[70vh] ${className} overflow-scroll overflow-x-hidden text-sm pr-8 scrollbar-thumb-rounded-full scrollbar-track-black text-white`}
     >
       <div className="flex flex-col gap-2">
         <div className="font-black text-xl">Introduction</div>
