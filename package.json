@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@elevenlabs/react": "^0.5.0",
-    "@mascotbot-sdk/react": "file:mascotbot-sdk-react-0.1.6.tgz",
+    "@mascotbot-sdk/react": "file:mascotbot-sdk-react-0.1.7.tgz",
     "@rive-app/react-webgl2": "^4.24.0",
     "clsx": "^2.1.1",
     "next": "14.2.5",
